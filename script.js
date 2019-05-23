@@ -77,7 +77,7 @@ socket.on("exanak",function(w){
                 fill("red");
             }
             else if (matrix ==6){
-                fill("black");
+                fill("#000066");
             }
             rect(x * side, y * side, side, side);
         }
