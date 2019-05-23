@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var fs = require("fs");
 
 app.use(express.static("."));
 
@@ -25,6 +26,14 @@ grasseaterArr = [];
 predatorArr = [];
 mardArr = [];
 mutantArr = [];
+
+Weather = "Summer";
+Weatherinit = 1;
+Grassinit=0;
+Grasseaterinit=0;
+Predatorinit=0;
+Mardinit=0;
+Mutantinit=0;
 
 //stexcum en matrix generacnox function
 var w = 50;
@@ -64,18 +73,23 @@ for (var y = 0; y < matrix.length; y++) {
 
         if (matrix[y][x] == 1) {
             grassArr.push(new Grass(x, y, 1));
+            Grassinit++;
         }
         else if (matrix[y][x] == 2) {
             grasseaterArr.push(new GrassEater(x, y, 2));
+            Grasseaterinit++;
         }
         else if (matrix[y][x] == 3) {
             predatorArr.push(new Predator(x, y, 3));
+            Predatorinit++;
         }
         else if (matrix[y][y] == 4) {
             mardArr.push(new Mard(x, y));
+            Mardinit++;
         }
         else if (matrix[y][y] == 5) {
             mutantArr.push(new Mutant(x, y));
+            Mutantinit++;
         }
     }
 }
@@ -121,129 +135,170 @@ io.on('connection', function (socket) {
         var x = arr[0];
         var y = arr[1];
 
+        if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
+
+            var directions = [
+                [x - 1, y - 1],
+                [x, y - 1],
+                [x + 1, y - 1],
+                [x - 1, y],
+                [x + 1, y],
+                [x - 1, y + 1],
+                [x, y + 1],
+                [x + 1, y + 1]
+            ];
 
 
-        directions = [];
-
-        var b = 1;
-        for (var i = y; i > 0; i--) {
-            var t = [x, y - b];
-            directions.push(t);
-            b++;
-        }
-        var g = 1;
-        for (var i = y; i < matrix.length; i++) {
-            var c = [x, y + g];
-            directions.push(c);
-            g++;
-        }
-        var d = 1;
-        for (var i = x; i > 0; i--) {
-            var q = [x - d, y];
-            directions.push(q);
-            d++;
-        }
-        var n = 1;
-        for (var i = x; i < matrix.length; i++) {
-            var p = [x + n, y];
-            directions.push(p);
-            n++;
-        }
-        if (matrix[y][x] == 1) {
-            for (var i in grassArr) {
-                if (y == grassArr[i].y && x == grassArr[i].x) {
-                    grassArr.splice(i, 1);
-                    break
-                }
-            }
-        }
-        else if (matrix[y][x] == 2) {
-            for (var i in grasseaterArr) {
-                if (y == grasseaterArr[i].y && x == grasseaterArr[i].x) {
-                    grasseaterArr.splice(i, 1);
-                    break
-                }
-            }
-        }
-        else if (matrix[y][x] == 3) {
-            for (var i in predatorArr) {
-                if (y == predatorArr[i].y && x == predatorArr[i].x) {
-                    predatorArr.splice(i, 1);
-                    break
-                }
-            }
-        }
-        else if (matrix[y][x] == 4) {
-            for (var i in mardArr) {
-                if (y == mardArr[i].y && x == mardArr[i].x) {
-                    mardArr.splice(i, 1);
-                    break
-                }
-            }
-        }
-        else if (matrix[y][x] == 5) {
-            for (var i in mutantArr) {
-                if (y == mutantArr[i].y && x == mutantArr[i].x) {
-                    mutantArr.splice(i, 1);
-                    break
-                }
-            }
-        }
-        for (var i in directions) {
-            var urishx = directions[i][0];
-            var urishy = directions[i][0];
-            
-            if (matrix[urishy][urishx] == 1) {
+            if (matrix[y][x] == 1) {
                 for (var i in grassArr) {
-                    if (urishy == grassArr[i].y && urishx == grassArr[i].x) {
+                    if (y == grassArr[i].y && x == grassArr[i].x) {
                         grassArr.splice(i, 1);
-                        break;
+                        break
                     }
                 }
             }
-            else if (matrix[urishy][urishx] == 2) {
+            else if (matrix[y][x] == 2) {
                 for (var i in grasseaterArr) {
-                    if (urishy == grasseaterArr[i].y && urishx == grasseaterArr[i].x) {
+                    if (y == grasseaterArr[i].y && x == grasseaterArr[i].x) {
                         grasseaterArr.splice(i, 1);
-                        break;
+                        break
                     }
                 }
             }
-            else if (matrix[urishy][urishx] == 3) {
+            else if (matrix[y][x] == 3) {
                 for (var i in predatorArr) {
-                    if (urishy == predatorArr[i].y && urishx == predatorArr[i].x) {
+                    if (y == predatorArr[i].y && x == predatorArr[i].x) {
                         predatorArr.splice(i, 1);
-                        break;
+                        break
                     }
                 }
             }
-            if (matrix[urishy][urishx] == 4) {
+            else if (matrix[y][x] == 4) {
                 for (var i in mardArr) {
-                    if (urishy == mardArr[i].y && urishx == mardArr[i].x) {
+                    if (y == mardArr[i].y && x == mardArr[i].x) {
                         mardArr.splice(i, 1);
-                        break;
+                        break
                     }
                 }
             }
-            if (matrix[urishy][urishx] == 5) {
+            else if (matrix[y][x] == 5) {
                 for (var i in mutantArr) {
-                    if (urishy == mutantArr[i].y && urishx == mutantArr[i].x) {
+                    if (y == mutantArr[i].y && x == mutantArr[i].x) {
                         mutantArr.splice(i, 1);
-                        break;
+                        break
                     }
                 }
             }
-            matrix[urishy][urishx] = 0;
-            y = urishy;
-            x = urishx;
+            matrix[y][x] = 88;
+
+            for (var i in directions) {
+                var urishx = directions[i][0];
+                var urishy = directions[i][0];
+
+
+                if (matrix[urishy][urishx] == 1) {
+                    for (var i in grassArr) {
+                        if (urishy == grassArr[i].y && urishx == grassArr[i].x) {
+                            grassArr.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                }
+
+
+
+                else if (matrix[urishy][urishx] == 2) {
+                    for (var i in grasseaterArr) {
+                        if (urishy == grasseaterArr[i].y && urishx == grasseaterArr[i].x) {
+                            grasseaterArr.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                else if (matrix[urishy][urishx] == 3) {
+                    for (var i in predatorArr) {
+                        if (urishy == predatorArr[i].y && urishx == predatorArr[i].x) {
+                            predatorArr.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+                else if (matrix[urishy][urishx] == 4) {
+                    for (var i in mardArr) {
+                        if (urishy == mardArr[i].y && urishx == mardArr[i].x) {
+                            mardArr.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+                else if (matrix[urishy][urishx] == 5) {
+                    for (var i in mutantArr) {
+                        if (urishy == mutantArr[i].y && urishx == mutantArr[i].x) {
+                            mutantArr.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+                matrix[urishy][urishx] = 88;
+            }
+
         }
-        matrix[y][x] = 0;
+        io.sockets.emit("matrix", matrix);
+
     });
+
+    socket.on("armagedon",function(){
+        for(var y = 0 ; y<matrix.length;y++){
+            for(var x=0; x<matrix[y].length;x++){
+                matrix[y][x]=6;
+            }
+        }
+        grassArr.length=0;
+        grasseaterArr.length=0;
+        predatorArr.length=0;
+        mardArr.length=0;
+        mutantArr.length=0;
+        io.sockets.emit("matrix",matrix);
+    }
+    )
+
+
 });
+function draw_weather() {
+    Weatherinit++;
+    if(Weatherinit==5){
+        Weatherinit=1
+    }
+    if(Weatherinit==4){
+        Weather="Autumn"
+    }
+    if(Weatherinit==3){
+        Weather="Winter"
+    }
+    if(Weatherinit==2){
+        Weather="Spring"
+    }
+    if(Weatherinit==1){
+        Weather="Summer"
+    }
+    io.sockets.emit("exanak",Weather);
+}
+
+var obj={"info":[]};
 
 
-setInterval(drawserever, 2000);
+function main(){
+    var file = "statistics.json";
+    obj.info.push({"cnvac xoteri qanak@":Grassinit,"cnvac xotakerneri qanak@":Grasseaterinit,"cnvax predatorneri qanak@":Predatorinit,"cnvac mardkanc qanak@":Mardinit,"cnvac mutantneri qanak@":Mutantinit})
+    fs.writeFileSync(file,JSON.stringify(obj,null,3));
+}
 
+
+setInterval(drawserever, 3000);
+setInterval(draw_weather,6000);
+setInterval(main,3000);
 
 
 
