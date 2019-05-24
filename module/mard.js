@@ -119,6 +119,7 @@ module.exports = class Mard extends LivingCreature {
             mardArr.push(newmard);
             matrix[newCell[1]][newCell[0]] = this.index;
             this.sov = 3;
+            Mardinit++;
         }
     }
     die() {
@@ -130,6 +131,7 @@ module.exports = class Mard extends LivingCreature {
 
                 }
             }
+            Mardinit--;
         }
 
     }

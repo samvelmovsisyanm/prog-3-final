@@ -73,6 +73,7 @@ module.exports = class Predator extends LivingCreature{
             predatorArr.push(newPredator);
             matrix[newCell[1]][newCell[0]] = this.index;
             this.energy = 0;
+            Predatorinit++;
         }
     }
     die() {
@@ -83,6 +84,7 @@ module.exports = class Predator extends LivingCreature{
                     predatorArr.splice(i, 1);
                 }
             }
+            Predatorinit--;
         }
     }
 }

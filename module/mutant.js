@@ -113,6 +113,7 @@ module.exports = class Mutant extends LivingCreature {
             mutantArr.push(newmutant);
             matrix[newCell[1]][newCell[0]] = this.index;
             this.sov = 8;
+            Mutantinit++;
         }
     }
     die() {
@@ -124,6 +125,7 @@ module.exports = class Mutant extends LivingCreature {
 
                 }
             }
+            Mutantinit--;
         }
 
     }

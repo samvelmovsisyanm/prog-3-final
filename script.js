@@ -36,7 +36,7 @@ socket.on("exanak",function(w){
         for (var x = 0; x < matrix[y].length; x++) {
 
             if (matrix[y][x] == 0) {
-                fill("blue");
+                fill("grey");
             }
             else if (matrix[y][x] == 1) {            
                if(weatherclient=="Summer"){
@@ -76,14 +76,18 @@ socket.on("exanak",function(w){
             else if (matrix[y][x] == 5) {
                 fill("red");
             }
-            else if (matrix ==6){
+            else if (matrix[y][x] == 6){
                 fill("#000066");
+            }
+            else if(matrix[y][x] == 88){
+                fill("#blue");
             }
             rect(x * side, y * side, side, side);
         }
     }
 }
-function FireButton(){
+
+function FireButton() {
     socket.emit("armagedon");
 }
 //yndunuma serveric matrixy ev kanchuma drawMatrix
